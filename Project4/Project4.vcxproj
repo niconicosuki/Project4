@@ -112,6 +112,7 @@
   <ItemGroup>
     <ClCompile Include="experiment.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="tictoc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\Public\Pictures\Sample Pictures\Chrysanthemum.jpg" />
@@ -120,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="experiment.h" />
+    <ClInclude Include="tictoc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
 
 
 
-	exp->e = 0; //set errors to zero.,exp.e can be a public value
+	exp.e = 0; //set errors to zero.,exp.e can be a public value
 
 				/** Deal with CommandLineArguments **/
 	exp.LoadCommandLineArguments( argc, argv);

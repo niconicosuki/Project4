@@ -1,36 +1,23 @@
-#pragma once
-#ifndef EXPERIMENT_H_
-#define EXPERIMENT_H_
+//OpenCV Headers
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
-#ifndef FISHANALYSIS_H_
-#error "#include FishAnalysis.h" must appear in source files before "#include experiment.h"
-#endif
+#include <time.h>
 
-#ifndef TALK2CAMERA_H_
-#error "#include Talk2Camera.h" must appear in source files before "#include experiment.h"
-#endif
+//3rd headers
+#include "tictoc.h"
 
-//#ifndef TALK2FRAMEGRABBER_H_
-// #error "#include Talk2FrameGrabber.h" must appear in source files before "#include experiment.h"
-//#endif
+using namespace cv;
 
-#ifndef WRITEOUTFISH_H_
-#error "#include WriteOutFish.h" must appear in source files before "#include experiment.h"
-#endif
+struct CamData;
 
-//#ifndef TALK2STAGE_H_
-// #error "#include Talk2Stage.h" must appear in source files before "#include experiment.h"
-//#endif
+struct WriteOut;
 
+class Frame {};
 
+class FishAnalysisParam {};
 
-#define EXP_ERROR -1
-#define EXP_SUCCESS 0
-#define EXP_VIDEO_RAN_OUT 1
-
-#define NSIZEX 512
-#define NSIZEY 512
-
+class FishAnalysisData {};
 
 class Experiment {
 
@@ -42,9 +29,15 @@ public:
 	
 	int VidFromFile; // 1 =Video from File, 0=Video From Camera
 
-					 /** GuiWindowNames **/
+	 /** GuiWindowNames **/
 	char* WinDisp;
 	char* WinCon1;
+
+
+	/** Error Handling **/
+	int e;
+
+
 
 	/** CommandLine Input **/
 	char** argv;
@@ -62,11 +55,12 @@ public:
 	VideoCapture capture;
 
 	/** Camera Input **/
-	CamData* MyCamera;
+	CamData* MyCamera;// talk to camera,we may change it;
 
 	/** MostRecently Observed CameraFrameNumber **/
-	unsigned long lastFrameSeenOutside;
-
+	/*
+	unsigned long lastFrameSeenOutside;//I think the value may be useless
+	*/
 	/** User-configurable Fish-related Parameters **/
 	FishAnalysisParam Params;
 
@@ -82,10 +76,17 @@ public:
 	//IplImage* CurrentSelectedImg;
 
 	/** Internal Frame data types **/
+	/*
+	* Frame contains a binary representation and an IplImage representation of a frame.
+	* This is useful in conjuncture with the TransformLib.h library that converts
+	* from CCD to DLP space.
+	*
+	*/
 	Frame* fromCCD;
 
 
-	/** Write Data To File **/
+	/** Write Data To File(yaml)  **/
+	
 	WriteOut* DataWriter;
 
 	/** Write Video To File **/
@@ -108,20 +109,9 @@ public:
 	int RECORDDATA;
 
 	/** MindControl API **/
-	SharedMemory_handle sm;
-
-
-
-	/** Stage Control **/
-	//int stageIsPresent;
-	//TaskHandle stage; // Handle to stage object
-	//CvPoint stageVel; //Current velocity of stage
-	//CvPoint stageCenter; // Point indicating center of stage.
-	//CvPoint stageFeedbackTargetOffset; //Target of the stage feedback loop as a delta distance in pixels from the center of the image
-	//int stageIsTurningOff; //1 indicates stage is turning off. 0 indicates stage is on or off.
-
-	/** Error Handling **/
-	int e;
+	//SharedMemory_handle sm;
+	//may be we can use other functions to replace share_memory?
+	
 
 	/*
 	
@@ -178,8 +168,8 @@ public:
 
 	/*
 	* Setsup data recording and video recording
-	* Will record video if exp->RECORDVID is 1
-	* and record data if exp->RECORDDATA is 1
+	* Will record video if  RECORDVID is 1
+	* and record data if  RECORDDATA is 1
 	*
 	*/
 
@@ -312,8 +302,8 @@ int HandleKeyStroke(int c, Experiment exp);
 
 /*
 * Setsup data recording and video recording
-* Will record video if exp->RECORDVID is 1
-* and record data if exp->RECORDDATA is 1
+* Will record video if  RECORDVID is 1
+* and record data if  RECORDDATA is 1
 *
 */
 int SetupRecording(Experiment exp);
@@ -322,37 +312,6 @@ int SetupRecording(Experiment exp);
 
 
 
-
-/**************************************************
-* Stage Tracking and FEedback System
-*
-* This should really probably go in a special library called Stage Tracking
-* that depends on both OpenCV AND Talk2STage.c, but its a huge pain to modify the makefile
-* to create a new library that has only one function in it.
-*
-* Alternatively this could conceivably go in Talk2Stage.c, but then I find it weird
-* that Talk2Stage.c should depend on OpenCV, because ultimatley it should be more general.
-*
-* It doesn't really belong in experiment.c either because it is not a method of experiment.c
-* But for now that is where it will sit.
-*
-*/
-
-/*
-* Scan for the USB device.
-*/
-//void InvokeStage(Experiment* exp);
-
-/*
-* Update the Stage Tracker.
-* If the Stage tracker is not initialized, don't do anything.
-* If the stage tracker is initialized then either do the tracking,
-* or if we are in the process of turning off tracking off, then tell
-* the stage to halt and update flags.
-*/
-//int HandleStageTracker(Experiment* exp);
-
-//void ShutOffStage(Experiment* exp);
 
 #endif /* EXPERIMENT_H_ */
 
